@@ -3,15 +3,15 @@ const CoreDataGraphql = require("js-core-data-graphql");
 const { expressPlayground } = require("graphql-playground-middleware");
 const bodyParser = require("body-parser");
 
-const GRAPHQL_URL = process.env.GRAPHQL_URL || "/graphql";
+const GRAPHQL_API_PATH = process.env.GRAPHQL_URL || "/graphql";
 
 module.exports = database => {
   let app = new Router();
 
   app.use(bodyParser.json());
 
-  app.post(GRAPHQL_URL, CoreDataGraphql.graphql(database));
-  app.get(GRAPHQL_URL, expressPlayground({ endpoint: GRAPHQL_URL }));
+  app.post(GRAPHQL_API_PATH, CoreDataGraphql.graphql(database));
+  app.get(GRAPHQL_API_PATH, expressPlayground({ endpoint: GRAPHQL_API_PATH }));
 
   return app;
 };
