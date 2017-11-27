@@ -1,7 +1,7 @@
 {
   "name": "jscda-graphql-api",
   "description": "GraphQL api plugin for js-core-data-app",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -14,8 +14,7 @@
     "js-core-data-graphql": "^0.1.5"
   },
   "scripts": {
-    "patch-release":
-      "npm version patch && npm publish && git push --follow-tags",
+    "patch-release": "npm version patch && npm publish && git push --follow-tags",
     "test": "cd test && mocha ."
   },
   "devDependencies": {
