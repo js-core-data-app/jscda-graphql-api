@@ -1,0 +1,24 @@
+{
+  "name": "jscda-graphql-api",
+  "description": "GraphQL api plugin for js-core-data-app",
+  "version": "0.0.1",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/js-core-data-app/jscda-graphql-api.git"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
+    "graphql-playground-middleware": "^1.1.2",
+    "js-core-data-graphql": "^0.1.5"
+  },
+  "scripts": {
+    "test": "cd test && mocha ."
+  },
+  "devDependencies": {
+    "js-core-data-app": "^0.1.0",
+    "mocha": "^4.0.1",
+    "supertest": "^3.0.0"
+  }
+}

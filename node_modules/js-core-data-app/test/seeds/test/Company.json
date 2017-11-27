@@ -1,0 +1,11 @@
+[
+  {
+    "id": 1,
+    "name": "Test company"
+  },
+  {
+    "id": 2,
+    "name": "Another company",
+    "employees": [666]
+  }
+]
