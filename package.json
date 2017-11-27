@@ -20,6 +20,7 @@
   "devDependencies": {
     "js-core-data-app": "^0.1.0",
     "mocha": "^4.0.1",
+    "sqlite3": "^3.1.13",
     "supertest": "^3.0.0"
   }
 }
