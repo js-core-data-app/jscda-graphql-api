@@ -5,7 +5,8 @@ const express = require("express");
 const app = require("js-core-data-app")();
 const graphqlApi = require("../");
 const api = express();
-api.use(graphqlApi(app.database));
+api.locals.database = app.database;
+graphqlApi(api);
 
 const test = supertest(api);
 
