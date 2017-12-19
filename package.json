@@ -1,11 +1,11 @@
 {
-  "name": "jscda-graphql-api",
-  "description": "GraphQL api plugin for js-core-data-app",
+  "name": "nappjs-graphql-api",
+  "description": "GraphQL api plugin for nappjs",
   "version": "0.0.6",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/js-core-data-app/jscda-graphql-api.git"
+    "url": "https://github.com/nappjs/nappjs-graphql-api.git"
   },
   "dependencies": {
     "body-parser": "^1.18.2",
@@ -18,8 +18,8 @@
   },
   "devDependencies": {
     "express": "^4.16.2",
-    "js-core-data-app": "^0.2.0",
     "mocha": "^4.0.1",
+    "nappjs": "^0.3.0",
     "sqlite3": "^3.1.13",
     "supertest": "^3.0.0"
   }

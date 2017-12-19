@@ -2,7 +2,7 @@ const assert = require("assert");
 const supertest = require("supertest");
 const express = require("express");
 
-const app = require("js-core-data-app")();
+const app = require("nappjs")();
 const graphqlApi = require("../");
 const api = express();
 api.locals.database = app.database;

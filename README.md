@@ -1,5 +1,5 @@
-# jscda-graphql-api
+# nappjs-graphql-api
 
-GraphQL api plugin for js-core-data-app
+GraphQL api plugin for nappjs
 
-[![Build Status](https://travis-ci.org/js-core-data/jscda-graphql-api.svg?branch=master)](https://travis-ci.org/js-core-data/jscda-graphql-api)
+[![Build Status](https://travis-ci.org/nappjs/nappjs-graphql-api.svg?branch=master)](https://travis-ci.org/nappjs/nappjs-graphql-api)
