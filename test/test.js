@@ -31,12 +31,12 @@ describe("api", () => {
   it("should fetch person", () => {
     return test
       .post("/graphql")
-      .send({ query: "query{getPeople{firstname lastname}}" })
+      .send({ query: "query{people{firstname lastname}}" })
       .expect(200)
       .expect(res => {
-        assert.ok(res.body.data.getPeople);
+        assert.ok(res.body.data.people);
 
-        let people = res.body.data.getPeople;
+        let people = res.body.data.people;
         assert.equal(people.length, 1);
 
         let person = people[0];
