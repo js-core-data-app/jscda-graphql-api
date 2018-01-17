@@ -10,8 +10,8 @@
   "dependencies": {
     "body-parser": "^1.18.2",
     "js-core-data-graphql": "^0.2.1",
-    "nappjs-api": "^0.1.0",
-    "nappjs-core-data": "^0.1.0"
+    "nappjs-api": "^0.2.2",
+    "nappjs-core-data": "^0.2.3"
   },
   "scripts": {
     "patch-release": "npm version patch && npm publish && git push --follow-tags",
@@ -20,7 +20,7 @@
   "devDependencies": {
     "@types/node": "^9.3.0",
     "mocha": "^4.0.1",
-    "nappjs": "^0.4.4",
+    "nappjs": "^0.5.4",
     "sqlite3": "^3.1.13",
     "supertest": "^3.0.0"
   }
