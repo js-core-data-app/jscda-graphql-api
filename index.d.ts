@@ -3,9 +3,12 @@ import NappJSApi from "nappjs-api";
 import { GraphQLSchema } from "graphql";
 export default class NappJSGraphqlAPI extends NappJSService {
     static dependencies: string[];
-    api: NappJSApi;
+    private api;
+    schemas: GraphQLSchema[];
     constructor(api: NappJSApi);
     load(napp: NappJS): Promise<void>;
-    gatherSchema(): Promise<GraphQLSchema>;
-    getSchemaFromFiles(schemaPath: string, scriptPath: string): Promise<GraphQLSchema | null>;
+    addSchema(schema: GraphQLSchema): void;
+    private getMergedSchema();
+    private gatherSchemas();
+    private getSchemaFromFiles(schemaPath, scriptPath);
 }

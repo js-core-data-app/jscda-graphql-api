@@ -19,7 +19,9 @@ import { createApolloFetch } from "apollo-fetch";
 
 const GRAPHQL_API_PATH = process.env.GRAPHQL_API_PATH || "/graphql";
 const GRAPHIQL_API_PATH = process.env.GRAPHQL_API_PATH;
-const GRAPHQL_SCHEMA_PATH = process.env.GRAPHQL_SCHEMA_PATH || "graphql";
+const GRAPHQL_SCHEMA_PATH = path.resolve(
+  process.env.GRAPHQL_SCHEMA_PATH || "graphql"
+);
 
 export default class NappJSGraphqlAPI extends NappJSService {
   static dependencies = ["nappjs-api"];
@@ -58,6 +60,13 @@ export default class NappJSGraphqlAPI extends NappJSService {
   }
 
   private async gatherSchemas(): Promise<void> {
+    if (!fs.existsSync(GRAPHQL_SCHEMA_PATH)) {
+      console.log(
+        `folder with graphql schemas not found (path: ${GRAPHQL_SCHEMA_PATH})`
+      );
+      return;
+    }
+
     let ls = fs.readdirSync(GRAPHQL_SCHEMA_PATH);
     let content: { [key: string]: boolean } = {};
     for (let item of ls) {
@@ -86,7 +95,7 @@ export default class NappJSGraphqlAPI extends NappJSService {
       schema = buildSchema(fs.readFileSync(schemaPath, "utf-8"));
     }
 
-    let resolversModule = require(path.resolve(scriptPath));
+    let resolversModule = require(scriptPath);
     let resolvers = await Promise.resolve(resolversModule());
 
     if (typeof resolvers === "string") {

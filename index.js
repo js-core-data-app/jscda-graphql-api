@@ -56,11 +56,12 @@ var graphql_tools_1 = require("graphql-tools");
 var apollo_fetch_1 = require("apollo-fetch");
 var GRAPHQL_API_PATH = process.env.GRAPHQL_API_PATH || "/graphql";
 var GRAPHIQL_API_PATH = process.env.GRAPHQL_API_PATH;
-var GRAPHQL_SCHEMA_PATH = process.env.GRAPHQL_SCHEMA_PATH || "graphql";
+var GRAPHQL_SCHEMA_PATH = path.resolve(process.env.GRAPHQL_SCHEMA_PATH || "graphql");
 var NappJSGraphqlAPI = (function (_super) {
     __extends(NappJSGraphqlAPI, _super);
     function NappJSGraphqlAPI(api) {
         var _this = _super.call(this) || this;
+        _this.schemas = [];
         _this.api = api;
         return _this;
     }
@@ -72,8 +73,11 @@ var NappJSGraphqlAPI = (function (_super) {
                     case 0:
                         app = this.api.app;
                         app.use(bodyParser.json());
-                        return [4, this.gatherSchema()];
+                        return [4, this.gatherSchemas()];
                     case 1:
+                        _a.sent();
+                        return [4, this.getMergedSchema()];
+                    case 2:
                         schema = _a.sent();
                         app.post(GRAPHQL_API_PATH, apollo_server_express_1.graphqlExpress({ schema: schema }));
                         app.get(GRAPHQL_API_PATH, graphql_playground_middleware_express_1.default({ endpoint: GRAPHIQL_API_PATH || GRAPHQL_API_PATH }));
@@ -82,12 +86,30 @@ var NappJSGraphqlAPI = (function (_super) {
             });
         });
     };
-    NappJSGraphqlAPI.prototype.gatherSchema = function () {
+    NappJSGraphqlAPI.prototype.addSchema = function (schema) {
+        this.schemas.push(schema);
+    };
+    NappJSGraphqlAPI.prototype.getMergedSchema = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var ls, content, _i, ls_1, item, base, schemas, _a, _b, _c, key, schemaFilename, scriptFilename, schema_1, schema;
+            var schema;
+            return __generator(this, function (_a) {
+                schema = graphql_tools_1.mergeSchemas({
+                    schemas: this.schemas
+                });
+                return [2, schema];
+            });
+        });
+    };
+    NappJSGraphqlAPI.prototype.gatherSchemas = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var ls, content, _i, ls_1, item, base, _a, _b, _c, key, schemaFilename, scriptFilename, schema;
             return __generator(this, function (_d) {
                 switch (_d.label) {
                     case 0:
+                        if (!fs.existsSync(GRAPHQL_SCHEMA_PATH)) {
+                            console.log("folder with graphql schemas not found (path: " + GRAPHQL_SCHEMA_PATH + ")");
+                            return [2];
+                        }
                         ls = fs.readdirSync(GRAPHQL_SCHEMA_PATH);
                         content = {};
                         for (_i = 0, ls_1 = ls; _i < ls_1.length; _i++) {
@@ -95,7 +117,6 @@ var NappJSGraphqlAPI = (function (_super) {
                             base = item.replace(path.extname(item), "");
                             content[base] = true;
                         }
-                        schemas = [];
                         _a = [];
                         for (_b in content)
                             _a.push(_b);
@@ -108,18 +129,14 @@ var NappJSGraphqlAPI = (function (_super) {
                         scriptFilename = path.join(GRAPHQL_SCHEMA_PATH, key + ".js");
                         return [4, this.getSchemaFromFiles(schemaFilename, scriptFilename)];
                     case 2:
-                        schema_1 = _d.sent();
-                        if (schema_1 !== null)
-                            schemas.push(schema_1);
+                        schema = _d.sent();
+                        if (schema !== null)
+                            this.addSchema(schema);
                         _d.label = 3;
                     case 3:
                         _c++;
                         return [3, 1];
-                    case 4:
-                        schema = graphql_tools_1.mergeSchemas({
-                            schemas: schemas
-                        });
-                        return [2, schema];
+                    case 4: return [2];
                 }
             });
         });
@@ -134,7 +151,7 @@ var NappJSGraphqlAPI = (function (_super) {
                         if (fs.existsSync(schemaPath)) {
                             schema = graphql_1.buildSchema(fs.readFileSync(schemaPath, "utf-8"));
                         }
-                        resolversModule = require(path.resolve(scriptPath));
+                        resolversModule = require(scriptPath);
                         return [4, Promise.resolve(resolversModule())];
                     case 1:
                         resolvers = _d.sent();
