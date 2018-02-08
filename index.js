@@ -46,29 +46,120 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var nappjs_1 = require("nappjs");
-var CoreDataGraphql = require("js-core-data-graphql");
-var expressPlayground = require("graphql-playground-middleware").expressPlayground;
+var path = require("path");
+var fs = require("fs");
+var apollo_server_express_1 = require("apollo-server-express");
+var graphql_playground_middleware_express_1 = require("graphql-playground-middleware-express");
 var bodyParser = require("body-parser");
+var graphql_1 = require("graphql");
+var graphql_tools_1 = require("graphql-tools");
+var apollo_fetch_1 = require("apollo-fetch");
 var GRAPHQL_API_PATH = process.env.GRAPHQL_API_PATH || "/graphql";
+var GRAPHIQL_API_PATH = process.env.GRAPHQL_API_PATH;
+var GRAPHQL_SCHEMA_PATH = process.env.GRAPHQL_SCHEMA_PATH || "graphql";
 var NappJSGraphqlAPI = (function (_super) {
     __extends(NappJSGraphqlAPI, _super);
-    function NappJSGraphqlAPI(coredata, api) {
+    function NappJSGraphqlAPI(api) {
         var _this = _super.call(this) || this;
-        _this.coredata = coredata;
         _this.api = api;
         return _this;
     }
     NappJSGraphqlAPI.prototype.load = function (napp) {
         return __awaiter(this, void 0, void 0, function () {
+            var app, schema;
             return __generator(this, function (_a) {
-                this.api.app.use(bodyParser.json());
-                this.api.app.post(GRAPHQL_API_PATH, CoreDataGraphql.graphql(this.coredata.database));
-                this.api.app.get(GRAPHQL_API_PATH, expressPlayground({ endpoint: GRAPHQL_API_PATH }));
-                return [2];
+                switch (_a.label) {
+                    case 0:
+                        app = this.api.app;
+                        app.use(bodyParser.json());
+                        return [4, this.gatherSchema()];
+                    case 1:
+                        schema = _a.sent();
+                        app.post(GRAPHQL_API_PATH, apollo_server_express_1.graphqlExpress({ schema: schema }));
+                        app.get(GRAPHQL_API_PATH, graphql_playground_middleware_express_1.default({ endpoint: GRAPHIQL_API_PATH || GRAPHQL_API_PATH }));
+                        return [2];
+                }
             });
         });
     };
-    NappJSGraphqlAPI.dependencies = ["nappjs-core-data", "nappjs-api"];
+    NappJSGraphqlAPI.prototype.gatherSchema = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var ls, content, _i, ls_1, item, base, schemas, _a, _b, _c, key, schemaFilename, scriptFilename, schema_1, schema;
+            return __generator(this, function (_d) {
+                switch (_d.label) {
+                    case 0:
+                        ls = fs.readdirSync(GRAPHQL_SCHEMA_PATH);
+                        content = {};
+                        for (_i = 0, ls_1 = ls; _i < ls_1.length; _i++) {
+                            item = ls_1[_i];
+                            base = item.replace(path.extname(item), "");
+                            content[base] = true;
+                        }
+                        schemas = [];
+                        _a = [];
+                        for (_b in content)
+                            _a.push(_b);
+                        _c = 0;
+                        _d.label = 1;
+                    case 1:
+                        if (!(_c < _a.length)) return [3, 4];
+                        key = _a[_c];
+                        schemaFilename = path.join(GRAPHQL_SCHEMA_PATH, key + ".graphql");
+                        scriptFilename = path.join(GRAPHQL_SCHEMA_PATH, key + ".js");
+                        return [4, this.getSchemaFromFiles(schemaFilename, scriptFilename)];
+                    case 2:
+                        schema_1 = _d.sent();
+                        if (schema_1 !== null)
+                            schemas.push(schema_1);
+                        _d.label = 3;
+                    case 3:
+                        _c++;
+                        return [3, 1];
+                    case 4:
+                        schema = graphql_tools_1.mergeSchemas({
+                            schemas: schemas
+                        });
+                        return [2, schema];
+                }
+            });
+        });
+    };
+    NappJSGraphqlAPI.prototype.getSchemaFromFiles = function (schemaPath, scriptPath) {
+        return __awaiter(this, void 0, void 0, function () {
+            var schema, resolversModule, resolvers, fetcher, _a, _b, _c;
+            return __generator(this, function (_d) {
+                switch (_d.label) {
+                    case 0:
+                        schema = null;
+                        if (fs.existsSync(schemaPath)) {
+                            schema = graphql_1.buildSchema(fs.readFileSync(schemaPath, "utf-8"));
+                        }
+                        resolversModule = require(path.resolve(scriptPath));
+                        return [4, Promise.resolve(resolversModule())];
+                    case 1:
+                        resolvers = _d.sent();
+                        if (!(typeof resolvers === "string")) return [3, 4];
+                        fetcher = apollo_fetch_1.createApolloFetch({ uri: resolvers });
+                        _a = graphql_tools_1.makeRemoteExecutableSchema;
+                        _b = {};
+                        _c = schema;
+                        if (_c) return [3, 3];
+                        return [4, graphql_tools_1.introspectSchema(fetcher)];
+                    case 2:
+                        _c = (_d.sent());
+                        _d.label = 3;
+                    case 3: return [2, _a.apply(void 0, [(_b.schema = _c,
+                                _b.fetcher = fetcher,
+                                _b)])];
+                    case 4:
+                        graphql_tools_1.addResolveFunctionsToSchema(schema, resolvers);
+                        _d.label = 5;
+                    case 5: return [2, schema];
+                }
+            });
+        });
+    };
+    NappJSGraphqlAPI.dependencies = ["nappjs-api"];
     return NappJSGraphqlAPI;
 }(nappjs_1.NappJSService));
 exports.default = NappJSGraphqlAPI;

@@ -1,10 +1,11 @@
-import { NappJS, NappJSService } from 'nappjs';
-import NappJSApi from 'nappjs-api';
-import NappJSCoreData from 'nappjs-core-data';
+import { NappJS, NappJSService } from "nappjs";
+import NappJSApi from "nappjs-api";
+import { GraphQLSchema } from "graphql";
 export default class NappJSGraphqlAPI extends NappJSService {
     static dependencies: string[];
-    coredata: NappJSCoreData;
     api: NappJSApi;
-    constructor(coredata: NappJSCoreData, api: NappJSApi);
+    constructor(api: NappJSApi);
     load(napp: NappJS): Promise<void>;
+    gatherSchema(): Promise<GraphQLSchema>;
+    getSchemaFromFiles(schemaPath: string, scriptPath: string): Promise<GraphQLSchema | null>;
 }

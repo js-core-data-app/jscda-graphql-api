@@ -10,9 +10,7 @@ describe("api", () => {
   before(async () => {
     napp.addPlugin("nappjs-graphql-api", path.join(__dirname, "../index"));
     await napp.load();
-    let coredata = napp.getService("nappjs-core-data");
     let api = napp.getService("nappjs-api");
-    await require("./seed-data")(coredata.database);
     test = supertest(api.app);
   });
 
@@ -30,6 +28,16 @@ describe("api", () => {
       .expect(200);
   });
 
+  it("should fetch hello", () => {
+    return test
+      .post("/graphql")
+      .send({ query: "query{ hello }" })
+      .expect(200)
+      .expect(res => {
+        assert.equal(res.body.data.hello, "world");
+      });
+  });
+
   it("should fetch person", () => {
     return test
       .post("/graphql")
@@ -44,6 +52,24 @@ describe("api", () => {
         let person = people.items[0];
         assert.equal(person.firstname, "John");
         assert.equal(person.lastname, "Doe");
+      });
+  });
+
+  it("should fetch universe", () => {
+    return test
+      .post("/graphql")
+      .send({
+        query: `query {
+        viewer{
+          latitude
+          longitude
+        }
+      }`
+      })
+      .expect(200)
+      .expect(res => {
+        assert.ok(res.body.data.viewer.latitude);
+        assert.ok(res.body.data.viewer.longitude);
       });
   });
 });

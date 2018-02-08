@@ -1,0 +1,12 @@
+type Person {
+  firstname: String
+  lastname: String
+}
+
+type PeopleResponse {
+  items: [Person!]!
+}
+
+type Query {
+  people: PeopleResponse
+}
