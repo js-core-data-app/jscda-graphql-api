@@ -31,10 +31,12 @@ describe("api", () => {
   it("should fetch hello", () => {
     return test
       .post("/graphql")
-      .send({ query: "query{ hello }" })
+      .send({ query: `query{ hello params(foo:"blah") context }` })
       .expect(200)
       .expect(res => {
         assert.equal(res.body.data.hello, "world");
+        assert.equal(res.body.data.params, "blah");
+        assert.equal(res.body.data.context, "/graphql");
       });
   });
 
@@ -55,21 +57,21 @@ describe("api", () => {
       });
   });
 
-  it("should fetch universe", () => {
-    return test
-      .post("/graphql")
-      .send({
-        query: `query {
-        viewer{
-          latitude
-          longitude
-        }
-      }`
-      })
-      .expect(200)
-      .expect(res => {
-        assert.ok(res.body.data.viewer.latitude);
-        assert.ok(res.body.data.viewer.longitude);
-      });
-  });
+  // it("should fetch universe", () => {
+  //   return test
+  //     .post("/graphql")
+  //     .send({
+  //       query: `query {
+  //       viewer{
+  //         latitude
+  //         longitude
+  //       }
+  //     }`
+  //     })
+  //     .expect(200)
+  //     .expect(res => {
+  //       assert.ok(res.body.data.viewer.latitude);
+  //       assert.ok(res.body.data.viewer.longitude);
+  //     });
+  // });
 });

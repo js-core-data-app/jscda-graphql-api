@@ -79,7 +79,9 @@ var NappJSGraphqlAPI = (function (_super) {
                         return [4, this.getMergedSchema()];
                     case 2:
                         schema = _a.sent();
-                        app.post(GRAPHQL_API_PATH, apollo_server_express_1.graphqlExpress({ schema: schema }));
+                        app.post(GRAPHQL_API_PATH, apollo_server_express_1.graphqlExpress(function (req) {
+                            return { schema: schema, context: req };
+                        }));
                         app.get(GRAPHQL_API_PATH, graphql_playground_middleware_express_1.default({ endpoint: GRAPHIQL_API_PATH || GRAPHQL_API_PATH }));
                         return [2];
                 }

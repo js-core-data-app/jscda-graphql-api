@@ -41,7 +41,12 @@ export default class NappJSGraphqlAPI extends NappJSService {
     await this.gatherSchemas();
     let schema = await this.getMergedSchema();
 
-    app.post(GRAPHQL_API_PATH, graphqlExpress({ schema }));
+    app.post(
+      GRAPHQL_API_PATH,
+      graphqlExpress(req => {
+        return { schema, context: req };
+      })
+    );
     app.get(
       GRAPHQL_API_PATH,
       expressPlayground({ endpoint: GRAPHIQL_API_PATH || GRAPHQL_API_PATH })

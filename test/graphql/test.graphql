@@ -1,5 +1,7 @@
 type Query {
   hello: String!
+  params(foo: String): String!
+  context: String!
 }
 
 type Something {
