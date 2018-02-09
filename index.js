@@ -62,12 +62,14 @@ var NappJSGraphqlAPI = (function (_super) {
     function NappJSGraphqlAPI(api) {
         var _this = _super.call(this) || this;
         _this.schemas = [];
+        _this.mergedSchema = null;
         _this.api = api;
         return _this;
     }
     NappJSGraphqlAPI.prototype.load = function (napp) {
         return __awaiter(this, void 0, void 0, function () {
-            var app, schema;
+            var _this = this;
+            var app;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -76,11 +78,8 @@ var NappJSGraphqlAPI = (function (_super) {
                         return [4, this.gatherSchemas()];
                     case 1:
                         _a.sent();
-                        return [4, this.getMergedSchema()];
-                    case 2:
-                        schema = _a.sent();
                         app.post(GRAPHQL_API_PATH, apollo_server_express_1.graphqlExpress(function (req) {
-                            return { schema: schema, context: req };
+                            return { schema: _this.mergedSchema, context: req };
                         }));
                         app.get(GRAPHQL_API_PATH, graphql_playground_middleware_express_1.default({ endpoint: GRAPHIQL_API_PATH || GRAPHQL_API_PATH }));
                         return [2];
@@ -89,7 +88,20 @@ var NappJSGraphqlAPI = (function (_super) {
         });
     };
     NappJSGraphqlAPI.prototype.addSchema = function (schema) {
-        this.schemas.push(schema);
+        return __awaiter(this, void 0, void 0, function () {
+            var _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        this.schemas.push(schema);
+                        _a = this;
+                        return [4, this.getMergedSchema()];
+                    case 1:
+                        _a.mergedSchema = _b.sent();
+                        return [2];
+                }
+            });
+        });
     };
     NappJSGraphqlAPI.prototype.getMergedSchema = function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -125,20 +137,22 @@ var NappJSGraphqlAPI = (function (_super) {
                         _c = 0;
                         _d.label = 1;
                     case 1:
-                        if (!(_c < _a.length)) return [3, 4];
+                        if (!(_c < _a.length)) return [3, 5];
                         key = _a[_c];
                         schemaFilename = path.join(GRAPHQL_SCHEMA_PATH, key + ".graphql");
                         scriptFilename = path.join(GRAPHQL_SCHEMA_PATH, key + ".js");
                         return [4, this.getSchemaFromFiles(schemaFilename, scriptFilename)];
                     case 2:
                         schema = _d.sent();
-                        if (schema !== null)
-                            this.addSchema(schema);
-                        _d.label = 3;
+                        if (!(schema !== null)) return [3, 4];
+                        return [4, this.addSchema(schema)];
                     case 3:
+                        _d.sent();
+                        _d.label = 4;
+                    case 4:
                         _c++;
                         return [3, 1];
-                    case 4: return [2];
+                    case 5: return [2];
                 }
             });
         });

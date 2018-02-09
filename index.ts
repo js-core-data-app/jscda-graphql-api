@@ -28,6 +28,7 @@ export default class NappJSGraphqlAPI extends NappJSService {
 
   private api: NappJSApi;
   public schemas: GraphQLSchema[] = [];
+  private mergedSchema: GraphQLSchema = null;
 
   constructor(api: NappJSApi) {
     super();
@@ -39,12 +40,11 @@ export default class NappJSGraphqlAPI extends NappJSService {
     app.use(bodyParser.json());
 
     await this.gatherSchemas();
-    let schema = await this.getMergedSchema();
 
     app.post(
       GRAPHQL_API_PATH,
       graphqlExpress(req => {
-        return { schema, context: req };
+        return { schema: this.mergedSchema, context: req };
       })
     );
     app.get(
@@ -53,8 +53,9 @@ export default class NappJSGraphqlAPI extends NappJSService {
     );
   }
 
-  public addSchema(schema: GraphQLSchema) {
+  public async addSchema(schema: GraphQLSchema) {
     this.schemas.push(schema);
+    this.mergedSchema = await this.getMergedSchema();
   }
 
   private async getMergedSchema(): Promise<GraphQLSchema> {
@@ -86,7 +87,7 @@ export default class NappJSGraphqlAPI extends NappJSService {
         schemaFilename,
         scriptFilename
       );
-      if (schema !== null) this.addSchema(schema);
+      if (schema !== null) await this.addSchema(schema);
     }
   }
 
