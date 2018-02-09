@@ -39,6 +39,12 @@ export default class NappJSGraphqlAPI extends NappJSService {
     const app = this.api.app;
     app.use(bodyParser.json());
 
+    try {
+      // TODO: create better way to handle core-data context in graphql context
+      let coredata = napp.getService("nappjs-core-data");
+      app.use(coredata.database.middleware());
+    } catch (e) {}
+
     await this.gatherSchemas();
 
     app.post(

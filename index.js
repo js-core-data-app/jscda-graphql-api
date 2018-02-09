@@ -69,12 +69,17 @@ var NappJSGraphqlAPI = (function (_super) {
     NappJSGraphqlAPI.prototype.load = function (napp) {
         return __awaiter(this, void 0, void 0, function () {
             var _this = this;
-            var app;
+            var app, coredata;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         app = this.api.app;
                         app.use(bodyParser.json());
+                        try {
+                            coredata = napp.getService("nappjs-core-data");
+                            app.use(coredata.database.middleware());
+                        }
+                        catch (e) { }
                         return [4, this.gatherSchemas()];
                     case 1:
                         _a.sent();
