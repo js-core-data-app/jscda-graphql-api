@@ -53,7 +53,7 @@ var graphql_playground_middleware_express_1 = require("graphql-playground-middle
 var bodyParser = require("body-parser");
 var graphql_1 = require("graphql");
 var graphql_tools_1 = require("graphql-tools");
-var apollo_fetch_1 = require("apollo-fetch");
+var apollo_fetch_nappjs_1 = require("apollo-fetch-nappjs");
 var GRAPHQL_API_PATH = process.env.GRAPHQL_API_PATH || "/graphql";
 var GRAPHIQL_API_PATH = process.env.GRAPHQL_API_PATH;
 var GRAPHQL_SCHEMA_PATH = path.resolve(process.env.GRAPHQL_SCHEMA_PATH || "graphql");
@@ -177,7 +177,7 @@ var NappJSGraphqlAPI = (function (_super) {
                     case 1:
                         resolvers = _d.sent();
                         if (!(typeof resolvers === "string")) return [3, 4];
-                        fetcher = apollo_fetch_1.createApolloFetch({ uri: resolvers });
+                        fetcher = apollo_fetch_nappjs_1.createApolloFetch({ uri: resolvers });
                         _a = graphql_tools_1.makeRemoteExecutableSchema;
                         _b = {};
                         _c = schema;

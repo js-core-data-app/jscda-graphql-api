@@ -15,7 +15,7 @@ import {
   introspectSchema
 } from "graphql-tools";
 import { GraphiQLData } from "apollo-server-module-graphiql";
-import { createApolloFetch } from "apollo-fetch";
+import { createApolloFetch } from "apollo-fetch-nappjs";
 
 const GRAPHQL_API_PATH = process.env.GRAPHQL_API_PATH || "/graphql";
 const GRAPHIQL_API_PATH = process.env.GRAPHQL_API_PATH;

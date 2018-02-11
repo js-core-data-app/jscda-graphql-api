@@ -57,21 +57,23 @@ describe("api", () => {
       });
   });
 
-  // it("should fetch universe", () => {
+  // it("should fetch external", () => {
   //   return test
   //     .post("/graphql")
   //     .send({
-  //       query: `query {
-  //       viewer{
-  //         latitude
-  //         longitude
-  //       }
-  //     }`
+  //       query: `query ($sort: [SurveySortType!], $filter: SurveyFilterType) {
+  //         surveys(sort: $sort, filter: $filter) {
+  //           items {
+  //             id
+  //             name
+  //           }
+  //           count
+  //         }
+  //       }`
   //     })
   //     .expect(200)
   //     .expect(res => {
-  //       assert.ok(res.body.data.viewer.latitude);
-  //       assert.ok(res.body.data.viewer.longitude);
+  //       assert.ok(res.body.data.surveys.items);
   //     });
   // });
 });
