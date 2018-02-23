@@ -17,7 +17,6 @@ function forEachField(schema: GraphQLSchema, fn: FieldIteratorFn): void {
   const typeMap = schema.getTypeMap();
   Object.keys(typeMap).forEach(typeName => {
     const type = typeMap[typeName];
-
     if (
       !getNamedType(type).name.startsWith("__") &&
       type instanceof GraphQLObjectType
@@ -50,9 +49,10 @@ const fieldResolver = (jwt, prev, typeName, fieldName) => {
     let path = getFullPath(info.path);
     let typePath = `${typeName}:${fieldName}`;
 
-    if (process.env.PERMISSIONS_PATH_PREFIX) {
-      path = process.env.PERMISSIONS_PATH_PREFIX + ":" + path;
-      typePath = process.env.PERMISSIONS_PATH_PREFIX + ":" + typePath;
+    let pathPrefix = getPermissionsPathPrefix();
+    if (pathPrefix) {
+      path = pathPrefix + ":" + path;
+      typePath = pathPrefix + ":" + typePath;
     }
 
     let allowed = await jwt.checkJWTPermissions(req, path);
@@ -63,6 +63,10 @@ const fieldResolver = (jwt, prev, typeName, fieldName) => {
     }
     return null;
   };
+};
+
+const getPermissionsPathPrefix = () => {
+  return process.env.PERMISSIONS_PATH_PREFIX || process.env.KONTENA_STACK_NAME;
 };
 
 export const addPermissions = (schema: GraphQLSchema, jwt) => {
