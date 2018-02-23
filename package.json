@@ -24,6 +24,7 @@
     "@types/node": "^9.3.0",
     "mocha": "^4.0.1",
     "nappjs": "^0.5.4",
+    "nappjs-jwt": "^0.3.0",
     "supertest": "^3.0.0"
   }
 }

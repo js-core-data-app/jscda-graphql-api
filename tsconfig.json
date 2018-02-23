@@ -9,10 +9,10 @@
     "baseUrl": ".",
     "strictNullChecks": true,
     "declaration": true,
-    "lib": ["esnext"],
+    "lib": ["esnext", "dom"],
     "paths": {
       "*": ["node_modules/*", "src/types/*"]
     }
   },
-  "include": ["./*"]
+  "include": ["./*", "./lib/*"]
 }

@@ -1,6 +1,9 @@
 type Person {
   firstname: String
   lastname: String
+  secret1: String
+  secret2: String
+  friends: [Person!]!
 }
 
 type PeopleResponse {

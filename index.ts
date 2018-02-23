@@ -17,6 +17,8 @@ import {
 import { GraphiQLData } from "apollo-server-module-graphiql";
 import { createApolloFetch } from "apollo-fetch-nappjs";
 
+import { addPermissions } from "./lib/permissions";
+
 const GRAPHQL_API_PATH = process.env.GRAPHQL_API_PATH || "/graphql";
 const GRAPHIQL_API_PATH = process.env.GRAPHQL_API_PATH;
 const GRAPHQL_SCHEMA_PATH = path.resolve(
@@ -35,6 +37,7 @@ export default class NappJSGraphqlAPI extends NappJSService {
     this.api = api;
   }
 
+  // Service initialization
   async load(napp: NappJS) {
     const app = this.api.app;
     app.use(bodyParser.json());
@@ -47,10 +50,17 @@ export default class NappJSGraphqlAPI extends NappJSService {
 
     await this.gatherSchemas();
 
+    let schema = this.mergedSchema;
+
+    try {
+      let jwt = napp.getService("nappjs-jwt");
+      addPermissions(schema, jwt);
+    } catch (e) {}
+
     app.post(
       GRAPHQL_API_PATH,
       graphqlExpress(req => {
-        return { schema: this.mergedSchema, context: req };
+        return { schema, context: req };
       })
     );
     app.get(
@@ -59,11 +69,13 @@ export default class NappJSGraphqlAPI extends NappJSService {
     );
   }
 
+  // Add schema to merged global schema
   public async addSchema(schema: GraphQLSchema) {
     this.schemas.push(schema);
     this.mergedSchema = await this.getMergedSchema();
   }
 
+  // Generate merged schema
   private async getMergedSchema(): Promise<GraphQLSchema> {
     let schema = mergeSchemas({
       schemas: this.schemas
@@ -71,6 +83,7 @@ export default class NappJSGraphqlAPI extends NappJSService {
     return schema;
   }
 
+  // Gather schema from schema path
   private async gatherSchemas(): Promise<void> {
     if (!fs.existsSync(GRAPHQL_SCHEMA_PATH)) {
       console.log(
@@ -97,6 +110,7 @@ export default class NappJSGraphqlAPI extends NappJSService {
     }
   }
 
+  // Create schema from schema and resolver files
   private async getSchemaFromFiles(
     schemaPath: string,
     scriptPath: string

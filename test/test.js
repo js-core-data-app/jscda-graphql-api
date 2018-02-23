@@ -1,10 +1,13 @@
 const assert = require("assert");
 const supertest = require("supertest");
 const path = require("path");
+const jwt = require("jsonwebtoken");
 
 const napp = require("nappjs").NewNappJS();
 
 let test = null;
+
+const token = require("./get-token");
 
 describe("api", () => {
   before(async () => {
@@ -30,19 +33,19 @@ describe("api", () => {
 
   it("should fetch hello", () => {
     return test
-      .post("/graphql")
+      .post(`/graphql?access_token=${token}`)
       .send({ query: `query{ hello params(foo:"blah") context }` })
       .expect(200)
       .expect(res => {
         assert.equal(res.body.data.hello, "world");
         assert.equal(res.body.data.params, "blah");
-        assert.equal(res.body.data.context, "/graphql");
+        assert.equal(res.body.data.context, `/graphql?access_token=${token}`);
       });
   });
 
   it("should fetch person", () => {
     return test
-      .post("/graphql")
+      .post(`/graphql?access_token=${token}`)
       .send({ query: "query{people{items{firstname lastname}}}" })
       .expect(200)
       .expect(res => {

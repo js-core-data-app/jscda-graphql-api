@@ -54,6 +54,7 @@ var bodyParser = require("body-parser");
 var graphql_1 = require("graphql");
 var graphql_tools_1 = require("graphql-tools");
 var apollo_fetch_nappjs_1 = require("apollo-fetch-nappjs");
+var permissions_1 = require("./lib/permissions");
 var GRAPHQL_API_PATH = process.env.GRAPHQL_API_PATH || "/graphql";
 var GRAPHIQL_API_PATH = process.env.GRAPHQL_API_PATH;
 var GRAPHQL_SCHEMA_PATH = path.resolve(process.env.GRAPHQL_SCHEMA_PATH || "graphql");
@@ -68,8 +69,7 @@ var NappJSGraphqlAPI = (function (_super) {
     }
     NappJSGraphqlAPI.prototype.load = function (napp) {
         return __awaiter(this, void 0, void 0, function () {
-            var _this = this;
-            var app, coredata;
+            var app, coredata, schema, jwt;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -83,8 +83,14 @@ var NappJSGraphqlAPI = (function (_super) {
                         return [4, this.gatherSchemas()];
                     case 1:
                         _a.sent();
+                        schema = this.mergedSchema;
+                        try {
+                            jwt = napp.getService("nappjs-jwt");
+                            permissions_1.addPermissions(schema, jwt);
+                        }
+                        catch (e) { }
                         app.post(GRAPHQL_API_PATH, apollo_server_express_1.graphqlExpress(function (req) {
-                            return { schema: _this.mergedSchema, context: req };
+                            return { schema: schema, context: req };
                         }));
                         app.get(GRAPHQL_API_PATH, graphql_playground_middleware_express_1.default({ endpoint: GRAPHIQL_API_PATH || GRAPHQL_API_PATH }));
                         return [2];
