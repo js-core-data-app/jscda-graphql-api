@@ -1,32 +1,32 @@
-import { NappJS, NappJSService } from "nappjs";
-import NappJSApi from "nappjs-api";
+import { NappJS, NappJSService } from 'nappjs';
+import NappJSApi from 'nappjs-api';
 
-import * as path from "path";
-import * as fs from "fs";
-import { graphqlExpress } from "apollo-server-express";
-import expressPlayground from "graphql-playground-middleware-express";
-import * as bodyParser from "body-parser";
-import * as express from "express";
-import { buildSchema, GraphQLSchema } from "graphql";
+import * as path from 'path';
+import * as fs from 'fs';
+import { graphqlExpress } from 'apollo-server-express';
+import expressPlayground from 'graphql-playground-middleware-express';
+import * as bodyParser from 'body-parser';
+import * as express from 'express';
+import { buildSchema, GraphQLSchema } from 'graphql';
 import {
   addResolveFunctionsToSchema,
   mergeSchemas,
   makeRemoteExecutableSchema,
   introspectSchema
-} from "graphql-tools";
-import { GraphiQLData } from "apollo-server-module-graphiql";
-import { createApolloFetch } from "apollo-fetch-nappjs";
+} from 'graphql-tools';
+import { GraphiQLData } from 'apollo-server-module-graphiql';
+import { createApolloFetch } from 'apollo-fetch-nappjs';
 
-import { addPermissions } from "./lib/permissions";
+import { addPermissions } from './lib/permissions';
 
-const GRAPHQL_API_PATH = process.env.GRAPHQL_API_PATH || "/graphql";
-const GRAPHIQL_API_PATH = process.env.GRAPHQL_API_PATH;
+const GRAPHQL_API_PATH = process.env.GRAPHQL_API_PATH || '/graphql';
+const GRAPHIQL_API_PATH = process.env.GRAPHIQL_API_PATH;
 const GRAPHQL_SCHEMA_PATH = path.resolve(
-  process.env.GRAPHQL_SCHEMA_PATH || "graphql"
+  process.env.GRAPHQL_SCHEMA_PATH || 'graphql'
 );
 
 export default class NappJSGraphqlAPI extends NappJSService {
-  static dependencies = ["nappjs-api"];
+  static dependencies = ['nappjs-api'];
 
   private api: NappJSApi;
   public schemas: GraphQLSchema[] = [];
@@ -44,7 +44,7 @@ export default class NappJSGraphqlAPI extends NappJSService {
 
     try {
       // TODO: create better way to handle core-data context in graphql context
-      let coredata = napp.getService("nappjs-core-data");
+      let coredata = napp.getService('nappjs-core-data');
       app.use(coredata.database.middleware());
     } catch (e) {}
 
@@ -53,7 +53,7 @@ export default class NappJSGraphqlAPI extends NappJSService {
     let schema = this.mergedSchema;
 
     try {
-      let jwt = napp.getService("nappjs-jwt");
+      let jwt = napp.getService('nappjs-jwt');
       addPermissions(schema, jwt);
     } catch (e) {}
 
@@ -95,7 +95,7 @@ export default class NappJSGraphqlAPI extends NappJSService {
     let ls = fs.readdirSync(GRAPHQL_SCHEMA_PATH);
     let content: { [key: string]: boolean } = {};
     for (let item of ls) {
-      let base = item.replace(path.extname(item), "");
+      let base = item.replace(path.extname(item), '');
       content[base] = true;
     }
 
@@ -118,13 +118,13 @@ export default class NappJSGraphqlAPI extends NappJSService {
     let schema: GraphQLSchema = null;
 
     if (fs.existsSync(schemaPath)) {
-      schema = buildSchema(fs.readFileSync(schemaPath, "utf-8"));
+      schema = buildSchema(fs.readFileSync(schemaPath, 'utf-8'));
     }
 
     let resolversModule = require(scriptPath);
     let resolvers = await Promise.resolve(resolversModule());
 
-    if (typeof resolvers === "string") {
+    if (typeof resolvers === 'string') {
       const fetcher = createApolloFetch({ uri: resolvers });
       return makeRemoteExecutableSchema({
         schema: schema || (await introspectSchema(fetcher)),
