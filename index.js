@@ -55,9 +55,9 @@ var graphql_1 = require("graphql");
 var graphql_tools_1 = require("graphql-tools");
 var apollo_fetch_nappjs_1 = require("apollo-fetch-nappjs");
 var permissions_1 = require("./lib/permissions");
-var GRAPHQL_API_PATH = process.env.GRAPHQL_API_PATH || "/graphql";
-var GRAPHIQL_API_PATH = process.env.GRAPHQL_API_PATH;
-var GRAPHQL_SCHEMA_PATH = path.resolve(process.env.GRAPHQL_SCHEMA_PATH || "graphql");
+var GRAPHQL_API_PATH = process.env.GRAPHQL_API_PATH || '/graphql';
+var GRAPHIQL_API_PATH = process.env.GRAPHIQL_API_PATH;
+var GRAPHQL_SCHEMA_PATH = path.resolve(process.env.GRAPHQL_SCHEMA_PATH || 'graphql');
 var NappJSGraphqlAPI = (function (_super) {
     __extends(NappJSGraphqlAPI, _super);
     function NappJSGraphqlAPI(api) {
@@ -76,7 +76,7 @@ var NappJSGraphqlAPI = (function (_super) {
                         app = this.api.app;
                         app.use(bodyParser.json());
                         try {
-                            coredata = napp.getService("nappjs-core-data");
+                            coredata = napp.getService('nappjs-core-data');
                             app.use(coredata.database.middleware());
                         }
                         catch (e) { }
@@ -85,7 +85,7 @@ var NappJSGraphqlAPI = (function (_super) {
                         _a.sent();
                         schema = this.mergedSchema;
                         try {
-                            jwt = napp.getService("nappjs-jwt");
+                            jwt = napp.getService('nappjs-jwt');
                             permissions_1.addPermissions(schema, jwt);
                         }
                         catch (e) { }
@@ -139,7 +139,7 @@ var NappJSGraphqlAPI = (function (_super) {
                         content = {};
                         for (_i = 0, ls_1 = ls; _i < ls_1.length; _i++) {
                             item = ls_1[_i];
-                            base = item.replace(path.extname(item), "");
+                            base = item.replace(path.extname(item), '');
                             content[base] = true;
                         }
                         _a = [];
@@ -176,13 +176,13 @@ var NappJSGraphqlAPI = (function (_super) {
                     case 0:
                         schema = null;
                         if (fs.existsSync(schemaPath)) {
-                            schema = graphql_1.buildSchema(fs.readFileSync(schemaPath, "utf-8"));
+                            schema = graphql_1.buildSchema(fs.readFileSync(schemaPath, 'utf-8'));
                         }
                         resolversModule = require(scriptPath);
                         return [4, Promise.resolve(resolversModule())];
                     case 1:
                         resolvers = _d.sent();
-                        if (!(typeof resolvers === "string")) return [3, 4];
+                        if (!(typeof resolvers === 'string')) return [3, 4];
                         fetcher = apollo_fetch_nappjs_1.createApolloFetch({ uri: resolvers });
                         _a = graphql_tools_1.makeRemoteExecutableSchema;
                         _b = {};
@@ -203,7 +203,7 @@ var NappJSGraphqlAPI = (function (_super) {
             });
         });
     };
-    NappJSGraphqlAPI.dependencies = ["nappjs-api"];
+    NappJSGraphqlAPI.dependencies = ['nappjs-api'];
     return NappJSGraphqlAPI;
 }(nappjs_1.NappJSService));
 exports.default = NappJSGraphqlAPI;

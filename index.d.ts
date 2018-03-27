@@ -1,6 +1,6 @@
-import { NappJS, NappJSService } from "nappjs";
-import NappJSApi from "nappjs-api";
-import { GraphQLSchema } from "graphql";
+import { NappJS, NappJSService } from 'nappjs';
+import NappJSApi from 'nappjs-api';
+import { GraphQLSchema } from 'graphql';
 export default class NappJSGraphqlAPI extends NappJSService {
     static dependencies: string[];
     private api;
