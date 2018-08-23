@@ -44,7 +44,7 @@ export default class NappJSGraphqlAPI extends NappJSService {
 
     try {
       // TODO: create better way to handle core-data context in graphql context
-      let coredata = napp.getService('nappjs-core-data');
+      let coredata = napp.getService('nappjs-core-data') as any;
       app.use(coredata.database.middleware());
     } catch (e) {}
 
@@ -60,7 +60,7 @@ export default class NappJSGraphqlAPI extends NappJSService {
     app.post(
       GRAPHQL_API_PATH,
       graphqlExpress(req => {
-        return { schema, context: req };
+        return { schema, context: req, tracing: true };
       })
     );
     app.get(

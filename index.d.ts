@@ -9,7 +9,7 @@ export default class NappJSGraphqlAPI extends NappJSService {
     constructor(api: NappJSApi);
     load(napp: NappJS): Promise<void>;
     addSchema(schema: GraphQLSchema): Promise<void>;
-    private getMergedSchema();
-    private gatherSchemas();
-    private getSchemaFromFiles(schemaPath, scriptPath);
+    private getMergedSchema;
+    private gatherSchemas;
+    private getSchemaFromFiles;
 }
